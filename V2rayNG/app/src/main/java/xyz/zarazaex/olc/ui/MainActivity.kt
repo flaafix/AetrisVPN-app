@@ -110,6 +110,18 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
         toggle.syncState()
         binding.navView.setNavigationItemSelectedListener(this)
 
+        val typedValue = android.util.TypedValue()
+        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+        val onSurface = typedValue.data
+        binding.toolbar.setTitleTextColor(onSurface)
+        // MaterialToolbar с titleCentered рисует отдельный TextView — красим его явно
+        for (i in 0 until binding.toolbar.childCount) {
+            val child = binding.toolbar.getChildAt(i)
+            if (child is android.widget.TextView) {
+                child.setTextColor(onSurface)
+            }
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.drawerContentLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(0, systemBars.top, 0, systemBars.bottom)

@@ -123,6 +123,9 @@ abstract class BaseActivity : AppCompatActivity() {
             setSupportActionBar(it)
             supportActionBar?.setDisplayHomeAsUpEnabled(showHomeAsUp)
             title?.let { t -> this.title = t }
+            val typedValue = TypedValue()
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+            it.setTitleTextColor(typedValue.data)
             syncStatusBarWithToolbar(it)
         }
         progressBar = findViewById(R.id.progress_bar)
