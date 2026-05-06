@@ -95,6 +95,8 @@
                             app:tabMode="auto"
                             app:tabGravity="fill"
                             app:tabMaxWidth="0dp"
+                            app:tabPaddingStart="16dp"
+                            app:tabPaddingEnd="16dp"
                             app:tabRippleColor="@android:color/transparent"
                             app:tabTextAppearance="@style/TabLayoutTextStyle" />
 
