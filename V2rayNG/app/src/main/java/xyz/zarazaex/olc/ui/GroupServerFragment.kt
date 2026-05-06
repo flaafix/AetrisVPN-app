@@ -229,12 +229,18 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
      */
     private fun setSelectServer(guid: String) {
         val selected = MmkvManager.getSelectServer()
-        if (guid != selected) {
+        if (guid == selected) {
+            MmkvManager.setSelectServer("")
+            val position = mainViewModel.getPosition(guid)
+            adapter.setSelectServer(position, position)
+            if (mainViewModel.isRunning.value == true) {
+                ownerActivity.restartV2Ray()
+            }
+        } else {
             MmkvManager.setSelectServer(guid)
             val fromPosition = mainViewModel.getPosition(selected.orEmpty())
             val toPosition = mainViewModel.getPosition(guid)
             adapter.setSelectServer(fromPosition, toPosition)
-
             if (mainViewModel.isRunning.value == true) {
                 ownerActivity.restartV2Ray()
             }
