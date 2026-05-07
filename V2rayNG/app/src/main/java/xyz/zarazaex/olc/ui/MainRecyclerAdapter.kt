@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.ColorUtils
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors
@@ -184,31 +183,18 @@ class MainRecyclerAdapter(
             (holder.itemMainBinding.tvTestResult.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart =
                     if (addressText.isEmpty()) 0 else 6.dpToPx(context)
 
-            // Keep selected state very quiet: only a soft surface step, no hard outline.
+            // Keep regular list items on the page surface; selected state is a quiet surface pill.
             val isSelected = guid == MmkvManager.getSelectServer()
             holder.itemMainBinding.cardContainer.apply {
-                val surfaceColor = MaterialColors.getColor(
-                    context,
-                    com.google.android.material.R.attr.colorSurfaceContainerLow,
-                    Color.TRANSPARENT
-                )
-                val selectedSurfaceColor = MaterialColors.getColor(
+                val selectedColor = MaterialColors.getColor(
                     context,
                     com.google.android.material.R.attr.colorSurfaceContainerHigh,
-                    surfaceColor
+                    Color.TRANSPARENT
                 )
 
-                setCardBackgroundColor(if (isSelected) selectedSurfaceColor else surfaceColor)
-                strokeWidth = if (isSelected) 1.dpToPx(context) else 0
-                strokeColor = if (isSelected) {
-                    MaterialColors.getColor(
-                        context,
-                        com.google.android.material.R.attr.colorOutlineVariant,
-                        Color.TRANSPARENT
-                    )
-                } else {
-                    Color.TRANSPARENT
-                }
+                setCardBackgroundColor(if (isSelected) selectedColor else Color.TRANSPARENT)
+                strokeWidth = 0
+                strokeColor = Color.TRANSPARENT
             }
 
             // subscription remarks

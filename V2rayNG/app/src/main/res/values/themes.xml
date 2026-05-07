@@ -144,7 +144,7 @@
 
     <!-- Tab label -->
     <style name="TabLayoutTextStyle" parent="TextAppearance.Material3.LabelLarge">
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>
