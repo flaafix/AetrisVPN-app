@@ -56,6 +56,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     private var isLiteTesting = false
     private var easterEggClickCount = 0
     private var isEasterEggActive = false
+    private var liteActionJob: kotlinx.coroutines.Job? = null
     /** Был ли VPN уже запущен в предыдущем колбэке — чтобы детектировать момент подключения */
     private var wasRunning = false
 
@@ -318,15 +319,19 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private fun handleFabAction() {
+        // Если идёт подключение (isLoading) — позволяем прервать и остановить сервис
         if (isFabOperationInProgress) {
+            Log.d(AppConfig.TAG, "FAB: cancel in-progress, stopping service")
+            isFabOperationInProgress = false
+            lifecycleScope.launch {
+                V2RayServiceManager.stopVService(this@MainActivity)
+            }
             return
         }
         isFabOperationInProgress = true
 
         val isRunning = mainViewModel.isRunning.value == true
 
-        // Блокируем все кнопки сразу
-        setButtonsEnabled(false)
         applyRunningState(isLoading = true, isRunning = false)
 
         lifecycleScope.launch {
@@ -357,11 +362,20 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private fun handleLiteAction() {
-        // If testing is in progress - stop it
-        if (mainViewModel.isTesting.value == true) {
+        // Отмена на любом этапе: обновление подписок или тест
+        if (mainViewModel.isTesting.value == true || liteActionJob?.isActive == true) {
+            liteActionJob?.cancel()
+            liteActionJob = null
             mainViewModel.cancelAllTests()
-            showStatus("Тест остановлен")
             isLiteTesting = false
+            isFabOperationInProgress = false
+            showStatus("Остановлено")
+            setButtonsEnabled(true)
+            binding.btnSummaryLite.setIconResource(R.drawable.bolt_24)
+            binding.btnSummaryLite.backgroundTintList = ColorStateList.valueOf(
+                com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorSecondaryContainer, 0)
+            )
+            hideLoading()
             return
         }
 
@@ -370,10 +384,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
         }
         isFabOperationInProgress = true
 
-        // Блокируем все кнопки сразу при нажатии
-        setButtonsEnabled(false)
-
-        lifecycleScope.launch {
+        liteActionJob = lifecycleScope.launch {
             try {
                 if (mainViewModel.isRunning.value == true) {
                     V2RayServiceManager.stopVService(this@MainActivity)
@@ -382,33 +393,36 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
 
                 showStatus("Обновление профилей...")
                 showLoading()
+                // Иконка молнии → стоп пока идёт обновление
+                binding.btnSummaryLite.setIconResource(R.drawable.ic_stop_24dp)
                 isLiteTesting = true
 
-                launch(Dispatchers.IO) {
-                    val result = mainViewModel.updateConfigViaSubAll()
-                    val removed = mainViewModel.removeDuplicateByIpAll()
-                    withContext(Dispatchers.Main) {
-                        mainViewModel.reloadServerList()
-                        if (result.configCount > 0) {
-                            val status = if (removed > 0)
-                                "Обновлено ${result.configCount} профилей, удалено $removed дубл. IP. Запуск теста..."
-                            else
-                                "Обновлено ${result.configCount} профилей. Запуск теста..."
-                            showStatus(status)
-                        } else {
-                            showStatus("Запуск теста...")
-                        }
-                        hideLoading()
+                val result = withContext(Dispatchers.IO) { mainViewModel.updateConfigViaSubAll() }
+                val removed = withContext(Dispatchers.IO) { mainViewModel.removeDuplicateByIpAll() }
 
-                        showStatus("Выполняется замер задержки. Ожидаем завершения...")
-                        mainViewModel.testAllRealPing()
-                    }
+                mainViewModel.reloadServerList()
+                if (result.configCount > 0) {
+                    val status = if (removed > 0)
+                        "Обновлено ${result.configCount} профилей, удалено $removed дубл. IP. Запуск теста..."
+                    else
+                        "Обновлено ${result.configCount} профилей. Запуск теста..."
+                    showStatus(status)
+                } else {
+                    showStatus("Запуск теста...")
                 }
-                delay(1500)
+                hideLoading()
+
+                showStatus("Выполняется замер задержки. Ожидаем завершения...")
+                mainViewModel.testAllRealPing()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                // Пользователь нажал стоп — уже обработано выше
             } catch (e: Exception) {
                 Log.e(AppConfig.TAG, "Error in handleLiteAction", e)
+                isLiteTesting = false
+                hideLoading()
             } finally {
                 isFabOperationInProgress = false
+                liteActionJob = null
             }
         }
     }
@@ -493,7 +507,15 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorSecondaryContainer, 0)
         )
         if (isLoading) {
-            setButtonsEnabled(false)
+            // Во время загрузки FAB и молния остаются доступны для отмены
+            binding.fab.isEnabled = true
+            binding.fab.alpha = 1.0f
+            val menu = binding.toolbar.menu
+            menu.findItem(R.id.real_ping_all)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
+            menu.findItem(R.id.filter_by_country)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
+            menu.findItem(R.id.sub_update)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
+            binding.btnSummaryLite.isEnabled = true
+            binding.btnSummaryLite.alpha = 1.0f
             binding.fab.backgroundTintList = secContainer
             setStatusDot(DotState.LOADING)
             return
