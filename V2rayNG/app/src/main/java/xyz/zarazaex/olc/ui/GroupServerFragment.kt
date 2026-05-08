@@ -77,11 +77,10 @@ class GroupServerFragment : BaseFragment<FragmentGroupServerBinding>(),
 //        binding.refreshLayout.setDistanceToTriggerSync((160 * resources.displayMetrics.density).toInt())
 
         mainViewModel.updateListAction.observe(viewLifecycleOwner) { index ->
-            if (mainViewModel.subscriptionId != subId) {
-                return@observe
+            if (mainViewModel.subscriptionId == subId) {
+                adapter.setData(mainViewModel.serversCache, index)
             }
-            // Log.d(TAG, "GroupServerFragment updateListAction subId=$subId")
-            adapter.setData(mainViewModel.serversCache, index)
+            // Неактивные фрагменты обновятся через onResume → subscriptionIdChanged
         }
 
         // Log.d(TAG, "GroupServerFragment onViewCreated: subId=$subId")

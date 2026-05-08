@@ -90,15 +90,13 @@ class MainRecyclerAdapter(
                             }
 
                             override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
-                                val oldProfile = oldData[oldPos].profile
-                                val newProfile = parsedNewData[newPos].profile
-                                val oldGuid = oldData[oldPos].guid
-                                val newGuid = parsedNewData[newPos].guid
-                                return oldProfile == newProfile &&
-                                        oldProfile.isFavorite == newProfile.isFavorite &&
-                                        (oldGuid == MmkvManager.getSelectServer()) == (newGuid == MmkvManager.getSelectServer()) &&
-                                        MmkvManager.decodeServerAffiliationInfo(oldGuid)?.testDelayMillis ==
-                                        MmkvManager.decodeServerAffiliationInfo(newGuid)?.testDelayMillis
+                                val old = oldData[oldPos]
+                                val new = parsedNewData[newPos]
+                                val selectedGuid = MmkvManager.getSelectServer()
+                                return old.profile == new.profile &&
+                                        old.profile.isFavorite == new.profile.isFavorite &&
+                                        (old.guid == selectedGuid) == (new.guid == selectedGuid) &&
+                                        old.testDelayMillis == new.testDelayMillis
                             }
 
                             override fun getChangePayload(oldPos: Int, newPos: Int): Any? {

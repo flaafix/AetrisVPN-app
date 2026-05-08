@@ -51,6 +51,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val updateTestResultAction by lazy { MutableLiveData<String>() }
     val liteTestFinished = MutableLiveData<Boolean>()
     val isTesting by lazy { MutableLiveData<Boolean>().also { it.value = false } }
+    var suppressPinSelected = false
     private val tcpingTestScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     /**
@@ -120,7 +121,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             list
         }
 
-        pinSelectedGuidToTop(serverList)
+        if (!suppressPinSelected) pinSelectedGuidToTop(serverList)
         updateCache()
         updateListAction.value = -1
     }
@@ -176,8 +177,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (code in activeCountryFilter) continue
             }
 
+            val delay = MmkvManager.decodeServerAffiliationInfo(guid)?.testDelayMillis ?: 0L
+
             if (kw.isEmpty()) {
-                serversCache.add(ServersCache(guid, profile))
+                serversCache.add(ServersCache(guid, profile, delay))
                 continue
             }
 
@@ -190,9 +193,37 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 || server.matchesPattern(searchRegex, kw)
                 || protocol.matchesPattern(searchRegex, kw)
             ) {
-                serversCache.add(ServersCache(guid, profile))
+                serversCache.add(ServersCache(guid, profile, delay))
             }
         }
+    }
+
+    /** Builds a snapshot of ServersCache for the given subId without changing global state. */
+    fun reloadForSub(subId: String): MutableList<ServersCache>? {
+        val guids = when {
+            subId.isEmpty() -> MmkvManager.decodeAllServerList()
+            subId.startsWith("group_") -> {
+                val allSubs = MmkvManager.decodeSubscriptions()
+                val groupSubs = when (subId) {
+                    "group_white" -> allSubs.filter {
+                        it.subscription.remarks.startsWith("БЕЛЫЕ", ignoreCase = true) ||
+                        it.subscription.remarks.startsWith("WHITE", ignoreCase = true)
+                    }
+                    "group_black" -> allSubs.filter {
+                        it.subscription.remarks.startsWith("ЧЕРНЫЕ", ignoreCase = true) ||
+                        it.subscription.remarks.startsWith("BLACK", ignoreCase = true)
+                    }
+                    else -> emptyList()
+                }
+                groupSubs.flatMap { MmkvManager.decodeServerList(it.guid) }.toMutableList()
+            }
+            else -> MmkvManager.decodeServerList(subId)
+        }
+        return guids.mapNotNull { guid ->
+            val profile = MmkvManager.decodeServerConfig(guid) ?: return@mapNotNull null
+            val delay = MmkvManager.decodeServerAffiliationInfo(guid)?.testDelayMillis ?: 0L
+            ServersCache(guid, profile, delay)
+        }.toMutableList()
     }
 
     /** Sets excluded countries and reloads list. Pass empty set to show all. */
@@ -339,7 +370,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (removed > 0) {
                     reloadServerList()
                 }
-                MmkvManager.clearAllTestDelayResults(serversCache.map { it.guid }.toList())
+                // Сбрасываем пинги только если не идёт lite-тест (там пинги уже актуальны)
+                if (!suppressPinSelected) {
+                    MmkvManager.clearAllTestDelayResults(serversCache.map { it.guid }.toList())
+                }
                 updateListAction.value = -1
                 isTesting.value = true
 
@@ -627,11 +661,33 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * Favorites always come first, then sorted ascending by delay (failed/untested go to bottom).
      */
     @Synchronized
+    fun refreshPingInCache(guids: List<String>) {
+        val guidSet = guids.toHashSet()
+        for (i in serversCache.indices) {
+            val item = serversCache[i]
+            if (item.guid in guidSet) {
+                val delay = MmkvManager.decodeServerAffiliationInfo(item.guid)?.testDelayMillis ?: 0L
+                if (item.testDelayMillis != delay) {
+                    serversCache[i] = item.copy(testDelayMillis = delay)
+                }
+            }
+        }
+    }
+
+    @Synchronized
     fun sortServersCacheInPlace() {
+        // Refresh testDelayMillis from storage so DiffUtil sees the change
+        for (i in serversCache.indices) {
+            val item = serversCache[i]
+            val delay = MmkvManager.decodeServerAffiliationInfo(item.guid)?.testDelayMillis ?: 0L
+            if (item.testDelayMillis != delay) {
+                serversCache[i] = item.copy(testDelayMillis = delay)
+            }
+        }
         serversCache.sortWith(compareBy(
             { !it.profile.isFavorite },
             {
-                val delay = MmkvManager.decodeServerAffiliationInfo(it.guid)?.testDelayMillis ?: 0L
+                val delay = it.testDelayMillis
                 when {
                     delay > 0L -> delay
                     delay == 0L -> Long.MAX_VALUE - 1  // untested
@@ -639,7 +695,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         ))
-        pinSelectedCacheItemToTop(serversCache)
+        if (!suppressPinSelected) pinSelectedCacheItemToTop(serversCache)
     }
 
     fun sortByTestResults() {
@@ -834,7 +890,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 AppConfig.MSG_MEASURE_CONFIG_SUCCESS -> {
                     val resultPair = intent.serializable<Pair<String, Long>>("content") ?: return
                     MmkvManager.encodeServerTestDelayMillis(resultPair.first, resultPair.second)
-                    sortServersCacheInPlace()
+                    refreshPingInCache(listOf(resultPair.first))
+                    if (!suppressPinSelected) sortServersCacheInPlace()
                     updateListAction.value = -1
                 }
 
@@ -843,7 +900,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     update.results.forEach { result ->
                         MmkvManager.encodeServerTestDelayMillis(result.guid, result.delay)
                     }
-                    sortServersCacheInPlace()
+                    refreshPingInCache(update.results.map { it.guid })
+                    if (!suppressPinSelected) sortServersCacheInPlace()
                     updateListAction.value = -1
                 }
 

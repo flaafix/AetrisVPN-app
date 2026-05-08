@@ -245,6 +245,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                     MmkvManager.setSelectServer(firstReachable.guid)
                 }
 
+                mainViewModel.suppressPinSelected = false
                 mainViewModel.sortByTestResults()
                 mainViewModel.reloadServerList()
 
@@ -375,6 +376,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             liteActionJob?.cancel()
             liteActionJob = null
             mainViewModel.cancelAllTests()
+            mainViewModel.suppressPinSelected = false
             isLiteTesting = false
             isFabOperationInProgress = false
             showStatus("Остановлено")
@@ -412,6 +414,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                 menu.findItem(R.id.filter_by_country)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
                 menu.findItem(R.id.sub_update)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
                 isLiteTesting = true
+                mainViewModel.suppressPinSelected = true
 
                 val result = withContext(Dispatchers.IO) { mainViewModel.updateConfigViaSubAll() }
                 val removed = withContext(Dispatchers.IO) { mainViewModel.removeDuplicateByIpAll() }
