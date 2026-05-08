@@ -477,6 +477,11 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                     V2RayServiceManager.stopVService(this@MainActivity)
                     delay(1000)
                 }
+                if (MmkvManager.getSelectServer().isNullOrEmpty()) {
+                    // Сервер был снят с выбора — просто остановились, разблокируем UI
+                    applyRunningState(isLoading = false, isRunning = false)
+                    return@launch
+                }
                 startV2Ray()
                 delay(1000)
             } catch (e: Exception) {
