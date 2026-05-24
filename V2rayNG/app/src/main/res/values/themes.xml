@@ -147,4 +147,14 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <!-- Round checkbox (MD3 pill/circle shape) -->
+    <style name="Widget.App.CheckBox.Round" parent="Widget.Material3.CompoundButton.CheckBox">
+        <item name="buttonShapeAppearance">@style/ShapeAppearance.App.Checkbox.Round</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Checkbox.Round" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
