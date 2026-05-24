@@ -10,7 +10,7 @@ __base="$(basename "${__file}" .sh)"
 
 trap 'echo -e "Aborted, error $? in command: $BASH_COMMAND"; trap ERR; exit 1' ERR INT
 
-export ANDROID_HOME=${ANDROID_HOME:-/opt/android-sdk}
+export ANDROID_HOME=${ANDROID_HOME:-$HOME/android-sdk}
 export NDK_HOME=${NDK_HOME:-$ANDROID_HOME/ndk/25.2.9519653}
 
 if [[ ! -d $NDK_HOME ]]; then
