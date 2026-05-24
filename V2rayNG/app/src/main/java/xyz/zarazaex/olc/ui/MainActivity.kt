@@ -1093,11 +1093,26 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                 // currentFilter stores excluded set (empty = show all)
                 val checked = BooleanArray(codes.size) { codes[it] in currentFilter }
 
+                val adapter = object : android.widget.BaseAdapter() {
+                    override fun getCount() = labels.size
+                    override fun getItem(pos: Int) = labels[pos]
+                    override fun getItemId(pos: Int) = pos.toLong()
+                    override fun getView(pos: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
+                        val view = convertView ?: layoutInflater.inflate(R.layout.item_dialog_country, parent, false)
+                        view.findViewById<android.widget.TextView>(R.id.text).text = labels[pos]
+                        val cb = view.findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.check_box)
+                        cb.isChecked = checked[pos]
+                        view.setOnClickListener {
+                            checked[pos] = !checked[pos]
+                            cb.isChecked = checked[pos]
+                        }
+                        return view
+                    }
+                }
+
                 val dialog = MaterialAlertDialogBuilder(this@MainActivity)
                     .setTitle("Исключить страны")
-                    .setMultiChoiceItems(labels, checked) { _, which, isChecked ->
-                        checked[which] = isChecked
-                    }
+                    .setAdapter(adapter, null)
                     .setPositiveButton("Применить") { _, _ ->
                         val excluded = codes.filterIndexed { i, _ -> checked[i] }.toSet()
                         mainViewModel.applyCountryFilter(excluded)
