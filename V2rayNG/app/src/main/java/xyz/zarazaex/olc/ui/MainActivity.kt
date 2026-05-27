@@ -1088,18 +1088,24 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                 }
 
                 val codes = allCountriesMap.keys.toTypedArray()
-                val labels = allCountriesMap.values.toTypedArray()
 
                 // currentFilter stores excluded set (empty = show all)
                 val checked = BooleanArray(codes.size) { codes[it] in currentFilter }
 
                 val adapter = object : android.widget.BaseAdapter() {
-                    override fun getCount() = labels.size
-                    override fun getItem(pos: Int) = labels[pos]
+                    override fun getCount() = codes.size
+                    override fun getItem(pos: Int) = codes[pos]
                     override fun getItemId(pos: Int) = pos.toLong()
                     override fun getView(pos: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
                         val view = convertView ?: layoutInflater.inflate(R.layout.item_dialog_country, parent, false)
-                        view.findViewById<android.widget.TextView>(R.id.text).text = labels[pos]
+                        val code = codes[pos]
+                        val isUnknown = code == CountryDetector.UNKNOWN
+                        view.findViewById<android.widget.TextView>(R.id.flag).text =
+                            if (isUnknown) "🌐" else CountryDetector.codeToFlag(code)
+                        view.findViewById<android.widget.TextView>(R.id.text).text =
+                            if (isUnknown) "Неизвестно" else CountryDetector.codeToName(code)
+                        view.findViewById<android.widget.TextView>(R.id.code).text =
+                            if (isUnknown) "—" else code
                         val cb = view.findViewById<com.google.android.material.checkbox.MaterialCheckBox>(R.id.check_box)
                         cb.isChecked = checked[pos]
                         view.setOnClickListener {
