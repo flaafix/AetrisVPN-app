@@ -83,6 +83,12 @@
         <item name="cornerSize">16dp</item>
     </style>
 
+    <!-- Dialog corner shape — flatter than M3 default (28dp) -->
+    <style name="ShapeAppearance.App.Dialog" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
     <style name="RobotoEditTextStyle" parent="Widget.Material3.TextInputEditText.OutlinedBox">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">16sp</item>
@@ -92,6 +98,10 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="fontFamily">sans-serif</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
+        <!-- Flatter corners -->
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.App.Dialog</item>
+        <!-- Make dialog background match app surface instead of standing out -->
+        <item name="colorSurfaceContainerHigh">?attr/colorSurface</item>
     </style>
 
     <!-- Light -->
