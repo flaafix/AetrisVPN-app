@@ -19,7 +19,6 @@
             app:title="@string/app_name"
             app:titleTextColor="?attr/colorOnSurface"
             app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
-            app:titleCentered="true"
             app:navigationIcon="@drawable/ic_settings_24dp"
             app:elevation="0dp" />
 

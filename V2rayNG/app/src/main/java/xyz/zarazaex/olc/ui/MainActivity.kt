@@ -83,7 +83,12 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        try {
+            setContentView(binding.root)
+        } catch (e: Exception) {
+            Log.e(AppConfig.TAG, "setContentView failed", e)
+            throw e
+        }
         setupToolbar(binding.toolbar, false, getString(R.string.app_name))
 
         // edge-to-edge: toolbar padding for status bar
@@ -610,6 +615,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     private enum class DotState { IDLE, CONNECTED, LOADING, FAILURE }
 
     private fun startFabPulse() {
+        if (!binding.fab.isAttachedToWindow) return
         binding.fab.apply {
             animate().cancel()
             scaleX = 1f
@@ -631,6 +637,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private fun stopFabPulse() {
+        if (!binding.fab.isAttachedToWindow) return
         binding.fab.animate().cancel()
         binding.fab.scaleX = 1f
         binding.fab.scaleY = 1f
