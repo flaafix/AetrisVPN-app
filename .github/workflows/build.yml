@@ -106,10 +106,6 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
-    - name: Generate SUB file with subscriptions
-      run: |
-        python ${{ github.workspace }}/generate_sub.py
-
     - name: Extract version from tag
       id: version
       run: |

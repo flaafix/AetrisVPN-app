@@ -323,7 +323,7 @@ object MmkvManager {
     }
 
     /**
-     * Initializes the subscription list.
+     * Initializes the subscription list with default subscriptions if empty.
      */
     private fun initSubsList() {
         val subsList = decodeSubsList()
@@ -332,6 +332,27 @@ object MmkvManager {
         }
         subStorage.allKeys()?.forEach { key ->
             subsList.add(key)
+        }
+        if (subsList.isEmpty()) {
+            val defaultSubs = listOf(
+                SubscriptionItem(
+                    remarks = "ЧЁРНЫЕ СПИСКИ",
+                    url = "https://raw.githubusercontent.com/flaafix/AetrisVPN-black-list/refs/heads/main/configs.txt",
+                    enabled = true,
+                    autoUpdate = true
+                ),
+                SubscriptionItem(
+                    remarks = "БЕЛЫЕ СПИСКИ",
+                    url = "https://raw.githubusercontent.com/flaafix/AetrisVPN-white-list-lite/refs/heads/main/AetrisVPN.txt",
+                    enabled = true,
+                    autoUpdate = true
+                )
+            )
+            defaultSubs.forEach { sub ->
+                val guid = Utils.getUuid()
+                subStorage.encode(guid, JsonUtil.toJson(sub))
+                subsList.add(guid)
+            }
         }
         encodeSubsList(subsList)
     }
