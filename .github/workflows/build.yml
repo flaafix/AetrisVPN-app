@@ -125,6 +125,11 @@ jobs:
         PATCH=${VERSION_PARTS[2]:-0}
         VERSION_CODE=$((MAJOR * 1000000 + MINOR * 1000 + PATCH))
         
+        # dev builds always produce 0, use commit count as fallback
+        if [[ "$VERSION_CODE" -le 0 ]]; then
+          VERSION_CODE=$(git rev-list --count HEAD 2>/dev/null || echo 717)
+        fi
+        
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
         echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
         echo "Version: $VERSION_NAME ($VERSION_CODE)"
