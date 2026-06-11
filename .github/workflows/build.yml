@@ -108,9 +108,7 @@ jobs:
 
     - name: Generate SUB file with subscriptions
       run: |
-        cd ${{ github.workspace }}
-        chmod 755 gradlew
-        ./gradlew run
+        python ${{ github.workspace }}/generate_sub.py
 
     - name: Extract version from tag
       id: version
