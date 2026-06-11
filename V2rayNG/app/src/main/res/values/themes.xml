@@ -182,6 +182,40 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <!-- Big center connect button -->
+    <style name="Widget.CenterConnectButton" parent="Widget.Material3.Button">
+        <item name="android:minWidth">88dp</item>
+        <item name="android:minHeight">88dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="android:text"></item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
+        <item name="elevation">6dp</item>
+    </style>
+
+    <!-- Ping test pill button -->
+    <style name="Widget.PingButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingHorizontal">24dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">8dp</item>
+        <item name="android:text">@string/check_ping</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="android:textColor">?attr/colorOnSecondaryContainer</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
+        <item name="elevation">0dp</item>
+    </style>
+
     <!-- Tab label -->
     <style name="TabLayoutTextStyle" parent="TextAppearance.Material3.LabelLarge">
         <item name="android:textSize">14sp</item>

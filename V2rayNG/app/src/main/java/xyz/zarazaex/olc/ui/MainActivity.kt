@@ -19,7 +19,6 @@ import com.google.android.material.color.MaterialColors
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.core.content.ContextCompat
@@ -87,30 +86,28 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
         setContentView(binding.root)
         setupToolbar(binding.toolbar, false, getString(R.string.app_name))
 
-        // edge-to-edge: контент идёт под статус-бар, AppBarLayout тянется под него же
+        // edge-to-edge: toolbar padding for status bar
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { v, insets ->
             v.setPadding(0, insets.getInsets(WindowInsetsCompat.Type.statusBars()).top, 0, 0)
             insets
         }
-        // Нижние кнопки поднимаются над навигационной панелью
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomContainer) { v, insets ->
-            val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
-            v.setPadding(0, 0, 0, navBarHeight)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            v.setPadding(0, 0, 0, insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
             insets
         }
-
-        placeTabGroup()
 
         groupPagerAdapter = GroupPagerAdapter(this, emptyList())
         binding.viewPager.adapter = groupPagerAdapter
         binding.viewPager.isUserInputEnabled = true
 
-        val toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
+        binding.toolbar.setNavigationOnClickListener {
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
         binding.navView.setNavigationItemSelectedListener(this)
 
         val typedValue = android.util.TypedValue()
@@ -123,6 +120,10 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             if (child is android.widget.TextView) {
                 child.setTextColor(onSurface)
             }
+        }
+        // Tint navigation icon
+        binding.toolbar.navigationIcon?.let {
+            DrawableCompat.setTint(DrawableCompat.wrap(it).mutate(), onSurface)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.drawerContentLayout) { v, insets ->
@@ -190,7 +191,14 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
 
         binding.fab.setOnClickListener { handleFabAction() }
         binding.layoutTest.setOnClickListener { handleLayoutTestClick() }
-        binding.btnSummaryLite.setOnClickListener { handleLiteAction() }
+        binding.btnSummaryLite.setOnClickListener {
+            if (mainViewModel.isTesting.value == true) {
+                mainViewModel.cancelAllTests()
+            } else {
+                showStatus(getString(R.string.connection_test_testing_count, mainViewModel.serversCache.count()))
+                mainViewModel.testAllRealPing()
+            }
+        }
 
         setupGroupTab()
         setupViewModel()
@@ -214,14 +222,13 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
 
         mainViewModel.isTesting.observe(this) { testing ->
             if (testing) {
-                // Во время теста: блокируем всё кроме кнопки молнии (стоп)
+                stopFabPulse()
                 binding.fab.isEnabled = false
                 binding.fab.alpha = 0.5f
                 val menu = binding.toolbar.menu
                 menu.findItem(R.id.real_ping_all)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
                 menu.findItem(R.id.filter_by_country)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
                 menu.findItem(R.id.sub_update)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
-                // Молния — стоп-кнопка, всегда активна во время теста
                 binding.btnSummaryLite.isEnabled = true
                 binding.btnSummaryLite.alpha = 1.0f
                 binding.btnSummaryLite.setIconResource(R.drawable.ic_stop_24dp)
@@ -237,6 +244,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                 if (!isLiteTesting) {
                     showStatus("Проверка завершена")
                 }
+                if (mainViewModel.isRunning.value != true) startFabPulse()
             }
         }
 
@@ -336,7 +344,6 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private fun handleFabAction() {
-        // Если идёт подключение (isLoading) — позволяем прервать и остановить сервис
         if (isFabOperationInProgress) {
             Log.d(AppConfig.TAG, "FAB: cancel in-progress, stopping service")
             isFabOperationInProgress = false
@@ -345,27 +352,19 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             }
             return
         }
-        isFabOperationInProgress = true
 
-        val isRunning = mainViewModel.isRunning.value == true
-
-        applyRunningState(isLoading = true, isRunning = false)
-
-        lifecycleScope.launch {
-            try {
-                if (isRunning) {
-                    Log.d(AppConfig.TAG, "FAB: stopping service")
+        if (mainViewModel.isRunning.value == true) {
+            isFabOperationInProgress = true
+            applyRunningState(isLoading = true, isRunning = false)
+            lifecycleScope.launch {
+                try {
                     V2RayServiceManager.stopVService(this@MainActivity)
-                } else {
-                    Log.d(AppConfig.TAG, "FAB: starting service")
-                    startV2RayWithPermission()
+                } finally {
+                    isFabOperationInProgress = false
                 }
-            } catch (e: Exception) {
-                Log.e(AppConfig.TAG, "FAB: error", e)
-                applyRunningState(isLoading = false, isRunning = mainViewModel.isRunning.value == true)
-            } finally {
-                isFabOperationInProgress = false
             }
+        } else {
+            handleLiteAction()
         }
     }
 
@@ -507,7 +506,17 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     private var statusResetJob: kotlinx.coroutines.Job? = null
 
     private fun setTestState(content: String?) {
-        binding.tvTestState.text = content
+        binding.tvTestState.apply {
+            val current = text
+            if (content != null && content != current) {
+                animate().alpha(0f).setDuration(120).withEndAction {
+                    text = content
+                    animate().alpha(1f).setDuration(120).start()
+                }.start()
+            } else if (content != null) {
+                text = content
+            }
+        }
     }
 
     /** Show a temporary message in the status bar, then revert to connection state */
@@ -552,7 +561,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorSecondaryContainer, 0)
         )
         if (isLoading) {
-            // Во время подключения: только FAB доступен для отмены, всё остальное заблокировано
+            stopFabPulse()
             binding.fab.isEnabled = true
             binding.fab.alpha = 1.0f
             binding.fab.backgroundTintList = secContainer
@@ -572,6 +581,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
         )
 
         if (isRunning) {
+            stopFabPulse()
             setSecondaryButtonsEnabled(false)
             binding.fab.isEnabled = true
             binding.fab.alpha = 1.0f
@@ -583,6 +593,7 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             binding.layoutTest.isFocusable = true
             setStatusDot(DotState.CONNECTED)
         } else {
+            if (mainViewModel.isTesting.value != true) startFabPulse()
             setButtonsEnabled(true)
             binding.fab.backgroundTintList = secContainer
             binding.fab.iconTint = onSecContainer
@@ -597,6 +608,33 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private enum class DotState { IDLE, CONNECTED, LOADING, FAILURE }
+
+    private fun startFabPulse() {
+        binding.fab.apply {
+            animate().cancel()
+            scaleX = 1f
+            scaleY = 1f
+            animate()
+                .scaleX(1.06f)
+                .scaleY(1.06f)
+                .setDuration(1600)
+                .withEndAction {
+                    animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(1600)
+                        .withEndAction { startFabPulse() }
+                        .start()
+                }
+                .start()
+        }
+    }
+
+    private fun stopFabPulse() {
+        binding.fab.animate().cancel()
+        binding.fab.scaleX = 1f
+        binding.fab.scaleY = 1f
+    }
 
     private fun setStatusDot(state: DotState) {
         val dot = binding.statusDot
@@ -1174,16 +1212,5 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
         }
     }
 
-    private fun placeTabGroup() {
-        val tabGroup = binding.tabGroup
-        val bottomSlot = binding.tabSlotBottom
-        val topSlot = binding.tabSlotTop
-        val subsBottom = MmkvManager.decodeSettingsBool(AppConfig.PREF_SUBSCRIPTIONS_BOTTOM, false)
-        (tabGroup.parent as? android.view.ViewGroup)?.removeView(tabGroup)
-        if (subsBottom) {
-            bottomSlot.addView(tabGroup, 0)
-        } else {
-            topSlot.addView(tabGroup)
-        }
-    }
+
 }

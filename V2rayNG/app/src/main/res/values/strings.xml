@@ -448,6 +448,7 @@
         name="sub_setting_pre_profile_tip"
     >The config remarks exist and are unique</string>
     <string name="title_sub_update">Update subscription</string>
+    <string name="check_ping">Check Ping</string>
     <string name="title_ping_all_server">Tcping config</string>
     <string name="title_real_ping_all_server">Real delay config</string>
     <string name="title_user_asset_setting">Asset files</string>

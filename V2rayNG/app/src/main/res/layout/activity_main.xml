@@ -11,203 +11,133 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorSurface"
-            app:elevation="0dp"
-            app:liftOnScroll="false">
+            app:title="@string/app_name"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+            app:titleCentered="true"
+            app:navigationIcon="@drawable/ic_settings_24dp"
+            app:elevation="0dp" />
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:title="@string/app_name"
-                app:titleTextColor="?attr/colorOnSurface"
-                app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <RelativeLayout
+        <!-- Center content area: connect button + status + ping -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:id="@+id/main_content"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="32dp">
 
-                <LinearLayout
+                <!-- Big connect button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/fab"
+                    style="@style/Widget.CenterConnectButton"
+                    android:contentDescription="@string/tasker_start_service"
+                    app:icon="@drawable/shield_24"
+                    app:iconSize="36dp"
+                    app:backgroundTint="@color/color_fab_inactive"
+                    app:iconTint="?attr/colorOnSecondaryContainer"
+                    app:rippleColor="?attr/colorOnSecondaryContainer" />
+
+                <Space
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="24dp" />
 
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:id="@+id/progress_bar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:indeterminate="true"
-                        android:visibility="invisible"
-                        app:indicatorColor="?attr/colorPrimary"
-                        app:trackCornerRadius="0dp"
-                        app:trackColor="@android:color/transparent" />
-
-                    <LinearLayout
-                        android:id="@+id/tab_slot_top"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                <!-- Status pill: dot + text -->
+                <LinearLayout
+                    android:id="@+id/layout_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    android:background="@drawable/bg_glass_card">
 
                     <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?attr/colorOutlineVariant" />
+                        android:id="@+id/status_dot"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/status_dot"
+                        android:layout_marginEnd="10dp" />
 
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/view_pager"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:nextFocusRight="@+id/fab"
-                        android:scrollbars="vertical"
-                        android:layout_weight="1" />
-
-                    <!-- Bottom container: tab + action card -->
-                    <LinearLayout
-                        android:id="@+id/bottom_container"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_test_state"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="?attr/colorSurfaceContainer">
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="@string/connection_test_pending"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="?attr/colorOutlineVariant" />
-
-                        <LinearLayout
-                            android:id="@+id/tab_slot_bottom"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.tabs.TabLayout
-                                android:id="@+id/tab_group"
-                                android:layout_width="match_parent"
-                                android:layout_height="56dp"
-                                android:minHeight="56dp"
-                                android:background="?attr/colorSurface"
-                                app:tabIndicatorFullWidth="true"
-                                app:tabIndicatorHeight="3dp"
-                                app:tabMode="fixed"
-                                app:tabGravity="fill"
-                                app:tabMaxWidth="0dp"
-                                app:tabRippleColor="@android:color/transparent"
-                                app:tabIndicatorColor="?attr/colorPrimary"
-                                app:tabSelectedTextColor="?attr/colorPrimary"
-                                app:tabTextColor="?attr/colorOnSurfaceVariant"
-                                app:tabTextAppearance="@style/TabLayoutTextStyle" />
-
-                        </LinearLayout>
-
-                        <!-- Bottom action row -->
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="12dp"
-                            android:paddingBottom="12dp">
-
-                            <!-- Bolt icon button -->
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btn_summary_lite"
-                                style="@style/Widget.ActionSquareButton"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                app:icon="@drawable/bolt_24"
-                                app:iconSize="22dp"
-                                app:backgroundTint="?attr/colorSecondaryContainer"
-                                app:iconTint="?attr/colorOnSecondaryContainer"
-                                app:rippleColor="?attr/colorOnSecondaryContainer"
-                                app:layout_constraintEnd_toStartOf="@+id/fab"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                android:layout_marginEnd="8dp" />
-
-                            <!-- Connect / Disconnect icon button -->
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/fab"
-                                style="@style/Widget.ActionSquareButton"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:contentDescription="@string/tasker_start_service"
-                                app:icon="@drawable/shield_24"
-                                app:iconSize="26dp"
-                                app:backgroundTint="?attr/colorSecondaryContainer"
-                                app:iconTint="?attr/colorOnSecondaryContainer"
-                                app:rippleColor="?attr/colorOnSecondaryContainer"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
-
-                            <!-- Status pill: dot + text, tappable for ping -->
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/layout_test"
-                                android:layout_width="0dp"
-                                android:layout_height="52dp"
-                                android:layout_marginEnd="8dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:contentDescription="@string/connection_test_pending"
-                                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
-                                app:cardCornerRadius="26dp"
-                                app:cardElevation="0dp"
-                                app:strokeWidth="0dp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/btn_summary_lite"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:gravity="center_vertical"
-                                    android:clipChildren="false"
-                                    android:clipToPadding="false"
-                                    android:paddingStart="16dp"
-                                    android:paddingEnd="12dp">
-
-                                    <View
-                                        android:id="@+id/status_dot"
-                                        android:layout_width="10dp"
-                                        android:layout_height="10dp"
-                                        android:background="@drawable/status_dot"
-                                        android:layout_marginEnd="10dp" />
-
-                                    <TextView
-                                        android:id="@+id/tv_test_state"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:ellipsize="end"
-                                        android:text="@string/connection_test_pending"
-                                        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
-                                        android:textColor="?attr/colorOnSurfaceVariant" />
-
-                                </LinearLayout>
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </LinearLayout>
                 </LinearLayout>
 
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </RelativeLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
+
+                <!-- Ping all button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_summary_lite"
+                    style="@style/Widget.PingButton"
+                    app:icon="@drawable/bolt_24"
+                    app:iconSize="20dp"
+                    app:backgroundTint="?attr/colorSecondaryContainer"
+                    app:iconTint="?attr/colorOnSecondaryContainer" />
+
+            </LinearLayout>
+
+            <!-- Loading overlay progress -->
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:indicatorColor="?attr/colorPrimary"
+                app:trackCornerRadius="0dp"
+                app:trackColor="@android:color/transparent" />
+
+        </FrameLayout>
+
+        <!-- Tabs + server list -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_group"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
+            android:background="?attr/colorSurface"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorHeight="3dp"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabMaxWidth="0dp"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabIndicatorColor="?attr/colorPrimary"
+            app:tabSelectedTextColor="?attr/colorPrimary"
+            app:tabTextColor="?attr/colorOnSurfaceVariant"
+            app:tabTextAppearance="@style/TabLayoutTextStyle" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical" />
+
     </LinearLayout>
 
     <!-- Navigation Drawer -->
@@ -306,6 +236,7 @@
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                 android:linksClickable="true"
                 android:textIsSelectable="true" />
+
         </LinearLayout>
     </LinearLayout>
 
