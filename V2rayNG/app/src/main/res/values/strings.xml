@@ -9,15 +9,15 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="migration_success">Data migration success!</string>
-    <string name="drawer_forked_text" translatable="false">forked from <a
+    <string name="drawer_forked_text" translatable="false">based on <a
             href="https://github.com/2dust/v2rayng"
         >V2RayNG</a></string>
     <string
         name="drawer_developed_text"
         translatable="false"
-    >developed by developers from <a
-            href="https://t.me/openlibrecommunity"
-        >Olc</a></string>
+    >our Telegram channel: <a
+            href="https://t.me/AetrisVPN"
+        >@AetrisVPN</a></string>
     <string name="action_stop_service">Stop service</string>
     <string name="migration_fail">Data migration failed!</string>
     <string name="pull_down_to_refresh">Please pull down to refresh!</string>
@@ -661,37 +661,5 @@
         <item>Local</item>
         <item>WebDAV</item>
     </string-array>
-
-    <!-- Donate dialog -->
-    <string name="donate_dialog_title">Поддержите нас</string>
-    <string name="donate_label_card">Карта</string>
-    <string name="donate_label_ton">TON</string>
-    <string name="donate_label_trc20">TRC20</string>
-    <string name="donate_label_btc">BTC</string>
-    <string
-        name="donate_card_url"
-        translatable="false"
-    >pay.cloudtips.ru/p/28c476e5</string>
-    <string
-        name="donate_addr_ton"
-        translatable="false"
-    >UQD_Qc2cxLGe1P4wANi46cKdEvvzyJRrJTYPvGX2KAZDnsDh</string>
-    <string
-        name="donate_addr_trc20"
-        translatable="false"
-    >TYQqdACH5PrScvsMowSyS8JjaaF5wvFf5Q</string>
-    <string
-        name="donate_addr_btc"
-        translatable="false"
-    >bc1qvw0ts0jk5e5dfj9fdez76j9ck95lqz04fpf02a</string>
-    <string name="donate_copy">Копировать</string>
-    <string name="donate_open_link">Открыть</string>
-    <string
-        name="donate_card_link_url"
-        translatable="false"
-    >https://pay.cloudtips.ru/p/28c476e5</string>
-    <string name="donate_btn_dont_show">Не показывать</string>
-    <string name="donate_btn_postpone">Позже</string>
-    <string name="donate_toast_copied">Скопировано</string>
 
 </resources>

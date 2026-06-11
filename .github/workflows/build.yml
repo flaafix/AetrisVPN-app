@@ -106,6 +106,12 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
+    - name: Generate SUB file with subscriptions
+      run: |
+        cd ${{ github.workspace }}
+        chmod 755 gradlew
+        ./gradlew run
+
     - name: Extract version from tag
       id: version
       run: |

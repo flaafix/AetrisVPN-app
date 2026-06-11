@@ -201,7 +201,6 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
         }
 
         checkForUpdatesOnStartup()
-        showDonateDialogIfNeeded()
     }
 
     private fun setupViewModel() {
@@ -880,74 +879,6 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
                     showStatus(getString(R.string.toast_failure))
                 hideLoading()
             }
-        }
-    }
-
-    private fun showDonateDialogIfNeeded() {
-        if (MmkvManager.decodeSettingsBool(AppConfig.PREF_DONATE_DIALOG_DISMISSED)) return
-        val postponeUntil = MmkvManager.decodeSettingsLong(AppConfig.PREF_DONATE_DIALOG_POSTPONE_UNTIL, 0L)
-        if (System.currentTimeMillis() < postponeUntil) return
-
-        // Откладываем на следующий тик, чтобы Activity полностью отрисовался
-        binding.root.post { showDonateDialog() }
-    }
-
-    private fun showDonateDialog() {
-        val view = layoutInflater.inflate(R.layout.dialog_donate, null)
-
-        val tonValue = view.findViewById<TextView>(R.id.donate_ton_value)
-        val trcValue = view.findViewById<TextView>(R.id.donate_trc_value)
-        val btcValue = view.findViewById<TextView>(R.id.donate_btc_value)
-
-        val openCard = View.OnClickListener { openUrl(getString(R.string.donate_card_link_url)) }
-        view.findViewById<View>(R.id.donate_card_row).setOnClickListener(openCard)
-        view.findViewById<View>(R.id.donate_card_open).setOnClickListener(openCard)
-
-        view.findViewById<View>(R.id.donate_ton_copy).setOnClickListener {
-            copyToClipboard(tonValue.text.toString())
-        }
-        view.findViewById<View>(R.id.donate_trc_copy).setOnClickListener {
-            copyToClipboard(trcValue.text.toString())
-        }
-        view.findViewById<View>(R.id.donate_btc_copy).setOnClickListener {
-            copyToClipboard(btcValue.text.toString())
-        }
-
-        val titleStr = getString(R.string.donate_dialog_title)
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setView(view)
-            .setNegativeButton(R.string.donate_btn_dont_show) { d, _ ->
-                MmkvManager.encodeSettings(AppConfig.PREF_DONATE_DIALOG_DISMISSED, true)
-                d.dismiss()
-            }
-            .setCancelable(true)
-            .create()
-        // Closing (X / outside / back) postpones for 24h
-        val postpone = {
-            val postponeUntil = System.currentTimeMillis() + 24L * 60 * 60 * 1000
-            MmkvManager.encodeSettings(AppConfig.PREF_DONATE_DIALOG_POSTPONE_UNTIL, postponeUntil)
-        }
-        dialog.setOnCancelListener { postpone() }
-        dialog.setCustomTitle(buildDialogTitleWithClose(titleStr) {
-            postpone()
-            dialog.dismiss()
-        })
-        dialog.show()
-    }
-
-    private fun copyToClipboard(text: String) {
-        val clipboard = getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-        clipboard.setPrimaryClip(android.content.ClipData.newPlainText("addr", text))
-        toast(R.string.donate_toast_copied)
-    }
-
-    private fun openUrl(url: String) {
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        } catch (e: Exception) {
-            Log.w("MainActivity", "Failed to open url: $url", e)
         }
     }
 

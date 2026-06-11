@@ -78,10 +78,6 @@ object AppConfig {
     const val PREF_DYNAMIC_COLORS = "pref_dynamic_colors"
     const val PREF_SUBSCRIPTIONS_BOTTOM = "pref_subscriptions_bottom"
 
-    /** Donate dialog flags. */
-    const val PREF_DONATE_DIALOG_DISMISSED = "pref_donate_dialog_dismissed"
-    const val PREF_DONATE_DIALOG_POSTPONE_UNTIL = "pref_donate_dialog_postpone_until"
-
     /** Cache keys. */
     const val CACHE_SUBSCRIPTION_ID = "cache_subscription_id"
 
@@ -125,8 +121,7 @@ object AppConfig {
     const val APP_ISSUES_URL = "$APP_URL/issues"
     const val APP_WIKI_MODE = "$APP_URL/wiki/Mode"
     const val APP_PRIVACY_POLICY = "$GITHUB_RAW_URL/2dust/v2rayNG/master/CR.md"
-    const val APP_PROMOTION_URL = "aHR0cHM6Ly85LjIzNDQ1Ni54eXovYWJjLmh0bWw="
-    const val TG_CHANNEL_URL = "https://t.me/github_2dust"
+    const val TG_CHANNEL_URL = "https://t.me/AetrisVPN"
     const val DELAY_TEST_URL = "https://api.ipify.org"
     const val DELAY_TEST_URL2 = "https://api64.ipify.org"
 //    const val IP_API_URL = "https://speed.cloudflare.com/meta"

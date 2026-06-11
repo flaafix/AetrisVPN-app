@@ -216,7 +216,7 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="?attr/colorSurfaceContainerLow"
+        android:background="@drawable/bg_glass_card"
         android:orientation="vertical">
 
         <com.google.android.material.navigation.NavigationView
