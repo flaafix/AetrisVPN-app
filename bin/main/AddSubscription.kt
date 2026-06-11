@@ -118,35 +118,27 @@ class SubscriptionManager(private val mmkvPath: String) {
 }
 
 fun main() {
-    val mmkvPath = "/home/zarazaex/Projects/olcng/V2rayNG/app/src/main/assets/mmkv/SUB"
+    val mmkvPath = "/home/zarazaex/Projects/AetrisVPN/V2rayNG/app/src/main/assets/mmkv/SUB"
     
     val manager = SubscriptionManager(mmkvPath)
     
     val guid1 = manager.addSubscription(
-        remarks = "БЕЛЫЕ Z",
-        url = "https://raw.githubusercontent.com/zieng2/wl/refs/heads/main/vless_universal.txt",
+        remarks = "ЧЁРНЫЕ СПИСКИ",
+        url = "https://raw.githubusercontent.com/flaafix/AetrisVPN-black-list/refs/heads/main/configs.txt",
         autoUpdate = true
     )
-    println("Добавлена подписка БЕЛЫЕ Z: $guid1")
+    println("Добавлена подписка ЧЁРНЫЕ СПИСКИ: $guid1")
     
     val guid2 = manager.addSubscription(
-        remarks = "БЕЛЫЕ W",
-        url = "https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/githubmirror/bypass/bypass-all.txt",
+        remarks = "БЕЛЫЕ СПИСКИ",
+        url = "https://raw.githubusercontent.com/flaafix/AetrisVPN-white-list-lite/refs/heads/main/AetrisVPN.txt",
         autoUpdate = true
     )
-    println("Добавлена подписка БЕЛЫЕ W: $guid2")
-    
-    val guid3 = manager.addSubscription(
-        remarks = "KEY",
-        url = "https://key.zarazaex.xyz/sub",
-        autoUpdate = true
-    )
-    println("Добавлена подписка KEY: $guid3")
+    println("Добавлена подписка БЕЛЫЕ СПИСКИ: $guid2")
     
     println("\nОбновление подписок...")
-    manager.updateSubscription(guid1, "https://raw.githubusercontent.com/zieng2/wl/refs/heads/main/vless_universal.txt")
-    manager.updateSubscription(guid2, "https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/githubmirror/bypass/bypass-all.txt")
-    manager.updateSubscription(guid3, "https://key.zarazaex.xyz/sub")
+    manager.updateSubscription(guid1, "https://raw.githubusercontent.com/flaafix/AetrisVPN-black-list/refs/heads/main/configs.txt")
+    manager.updateSubscription(guid2, "https://raw.githubusercontent.com/flaafix/AetrisVPN-white-list-lite/refs/heads/main/AetrisVPN.txt")
     
     println("\nПодписки успешно добавлены и обновлены в $mmkvPath")
 }

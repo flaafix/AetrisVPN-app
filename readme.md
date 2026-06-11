@@ -11,7 +11,7 @@
 
 
 ## About
-olcng - is a free VPN, fork of v2rayNG by Olc
+AetrisVPN - is a free VPN, fork of v2rayNG by Olc
  
 <div align="center">
 
@@ -25,6 +25,6 @@ Email: [zarazaex@tuta.io](mailto:zarazaex@tuta.io)
 <br>
 Site: [zarazaex.xyz](https://zarazaex.xyz)
 <br>
-For: [olcNG](https://github.com/zarazaex69/olcng)
+For: [AetrisVPN](https://github.com/zarazaex69/AetrisVPN)
 
 </div>
