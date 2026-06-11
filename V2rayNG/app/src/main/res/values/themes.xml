@@ -222,10 +222,4 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <!-- Tab indicator — pill shaped -->
-    <style name="Widget.App.TabLayout" parent="Widget.Material3.TabLayout">
-        <item name="tabCornerRadius">28dp</item>
-        <item name="tabIndicatorHeight">0dp</item>
-    </style>
-
 </resources>
