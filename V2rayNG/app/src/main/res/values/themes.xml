@@ -51,16 +51,16 @@
         <!-- Misc -->
         <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
 
-        <!-- System bars — transparent so edge-to-edge works -->
+        <!-- System bars — transparent -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
 
-        <!-- Shape — M3 uses larger corner radii -->
+        <!-- Shape — pill/capsule style rounded corners -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.App.LargeComponent</item>
 
-        <!-- Typography: Roboto -->
+        <!-- Typography -->
         <item name="android:fontFamily">sans-serif</item>
         <item name="fontFamily">sans-serif</item>
         <item name="android:editTextStyle">@style/RobotoEditTextStyle</item>
@@ -71,41 +71,45 @@
         <item name="materialCardViewStyle">@style/Widget.App.GlassCard</item>
     </style>
 
-    <!-- Glass card style -->
+    <!-- Glass card style — pill shaped -->
     <style name="Widget.App.GlassCard" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">@color/md_theme_surfaceContainerLow</item>
-        <item name="cardElevation">2dp</item>
-        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">1dp</item>
+        <item name="cardCornerRadius">20dp</item>
         <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">#22FFFFFF</item>
+        <item name="strokeColor">#18FFFFFF</item>
         <item name="contentPadding">16dp</item>
     </style>
 
-    <!-- M3 Shape tokens -->
+    <!-- Pill-shaped corner tokens -->
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-    </style>
-
-    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">12dp</item>
     </style>
 
-    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">20dp</item>
     </style>
 
-    <!-- Dialog corner shape -->
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <!-- Dialog corner shape — pill -->
     <style name="ShapeAppearance.App.Dialog" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">24dp</item>
     </style>
 
     <style name="RobotoEditTextStyle" parent="Widget.Material3.TextInputEditText.OutlinedBox">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">16sp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
     </style>
 
     <style name="RobotoAlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
@@ -138,13 +142,13 @@
         <item name="colorPrimary">@color/md_theme_primary</item>
     </style>
 
-    <!-- Rounded-square FAB shape overlay (16dp corners) -->
-    <style name="ShapeAppearance.App.RoundedSquare" parent="ShapeAppearance.Material3.SmallComponent">
+    <!-- Pill-shaped FAB overlay -->
+    <style name="ShapeAppearance.App.Pill" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">28dp</item>
     </style>
 
-    <!-- Square icon button: no insets, no minHeight, no text -->
+    <!-- Square icon button: pill shape -->
     <style name="Widget.ActionSquareButton" parent="Widget.Material3.Button">
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
@@ -159,14 +163,35 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">0dp</item>
         <item name="android:text"></item>
-        <item name="shapeAppearance">@style/ShapeAppearance.App.RoundedSquare</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
         <item name="elevation">0dp</item>
         <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Pill-shaped FAB -->
+    <style name="Widget.App.PillFab" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <!-- Button style — pill capsule -->
+    <style name="Widget.App.PillButton" parent="Widget.Material3.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Pill</item>
+        <item name="cornerSize">28dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
     <!-- Tab label -->
     <style name="TabLayoutTextStyle" parent="TextAppearance.Material3.LabelLarge">
         <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- Tab indicator — pill shaped -->
+    <style name="Widget.App.TabLayout" parent="Widget.Material3.TabLayout">
+        <item name="tabCornerRadius">28dp</item>
+        <item name="tabIndicatorHeight">0dp</item>
     </style>
 
 </resources>

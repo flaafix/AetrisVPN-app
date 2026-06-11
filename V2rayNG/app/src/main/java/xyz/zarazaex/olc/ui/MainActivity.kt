@@ -318,8 +318,8 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
     }
 
     private fun setSecondaryButtonsEnabled(enabled: Boolean) {
-        binding.btnSummaryLite.isEnabled = enabled
-        binding.btnSummaryLite.alpha = if (enabled) 1.0f else 0.5f
+        binding.btnSummaryLite.isEnabled = true
+        binding.btnSummaryLite.alpha = 1.0f
         val menu = binding.toolbar.menu
         menu.findItem(R.id.real_ping_all)?.let {
             it.isEnabled = enabled
@@ -556,8 +556,6 @@ class MainActivity : HelperBaseActivity(), NavigationView.OnNavigationItemSelect
             binding.fab.isEnabled = true
             binding.fab.alpha = 1.0f
             binding.fab.backgroundTintList = secContainer
-            binding.btnSummaryLite.isEnabled = false
-            binding.btnSummaryLite.alpha = 0.5f
             val menu = binding.toolbar.menu
             menu.findItem(R.id.real_ping_all)?.let { it.isEnabled = false; it.icon?.alpha = 128 }
             menu.findItem(R.id.filter_by_country)?.let { it.isEnabled = false; it.icon?.alpha = 128 }

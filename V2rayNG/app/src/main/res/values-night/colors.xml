@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPing">#64B5F6</color>
-    <color name="colorPingGood">#81C784</color>
-    <color name="colorPingMedium">#FFD54F</color>
-    <color name="status_connected">#81C784</color>
-    <color name="status_failure">#E57373</color>
-    <color name="colorPingRed">#FF8A80</color>
+    <color name="colorPing">#BDBDBD</color>
+    <color name="colorPingGood">#E0E0E0</color>
+    <color name="colorPingMedium">#9E9E9E</color>
+    <color name="status_connected">#FFFFFF</color>
+    <color name="status_failure">#757575</color>
+    <color name="colorPingRed">#9E9E9E</color>
     <color name="color_fab_active">@color/md_theme_primary</color>
     <color name="color_fab_inactive">@color/md_theme_surfaceContainerHigh</color>
     <color name="divider_color_light">@color/md_theme_outlineVariant</color>
-    <color name="server_list_divider">#2640454F</color>
+    <color name="server_list_divider">#26FFFFFF</color>
 
-    <!-- Glassmorphism Dark scheme — Frosted glass blue/purple -->
-    <color name="md_theme_primary">#B3C5FF</color>
-    <color name="md_theme_onPrimary">#002E6E</color>
-    <color name="md_theme_primaryContainer">#00459E</color>
-    <color name="md_theme_onPrimaryContainer">#D9E2FF</color>
+    <!-- Monochrome Liquid Glass Dark scheme -->
+    <color name="md_theme_primary">#E0E0E0</color>
+    <color name="md_theme_onPrimary">#1A1A1A</color>
+    <color name="md_theme_primaryContainer">#424242</color>
+    <color name="md_theme_onPrimaryContainer">#E0E0E0</color>
 
-    <color name="md_theme_secondary">#C3C5DD</color>
-    <color name="md_theme_onSecondary">#2C2F42</color>
-    <color name="md_theme_secondaryContainer">#434559</color>
-    <color name="md_theme_onSecondaryContainer">#DFE0F9</color>
+    <color name="md_theme_secondary">#BDBDBD</color>
+    <color name="md_theme_onSecondary">#1A1A1A</color>
+    <color name="md_theme_secondaryContainer">#616161</color>
+    <color name="md_theme_onSecondaryContainer">#E0E0E0</color>
 
-    <color name="md_theme_tertiary">#E6BAD9</color>
-    <color name="md_theme_onTertiary">#44253D</color>
-    <color name="md_theme_tertiaryContainer">#5C3B54</color>
-    <color name="md_theme_onTertiaryContainer">#FFD6F0</color>
+    <color name="md_theme_tertiary">#9E9E9E</color>
+    <color name="md_theme_onTertiary">#1A1A1A</color>
+    <color name="md_theme_tertiaryContainer">#424242</color>
+    <color name="md_theme_onTertiaryContainer">#E0E0E0</color>
 
-    <!-- Error colors -->
-    <color name="md_theme_error">#FFB4AB</color>
-    <color name="md_theme_errorContainer">#93000A</color>
-    <color name="md_theme_onError">#690005</color>
-    <color name="md_theme_onErrorContainer">#FFDAD6</color>
+    <!-- Error -->
+    <color name="md_theme_error">#9E9E9E</color>
+    <color name="md_theme_errorContainer">#616161</color>
+    <color name="md_theme_onError">#1A1A1A</color>
+    <color name="md_theme_onErrorContainer">#E0E0E0</color>
 
-    <!-- Background colors -->
-    <color name="md_theme_background">#111318</color>
-    <color name="md_theme_onBackground">#E2E2E9</color>
+    <!-- Background -->
+    <color name="md_theme_background">#121212</color>
+    <color name="md_theme_onBackground">#E0E0E0</color>
 
-    <!-- Surface colors -->
-    <color name="md_theme_surface">#181A20</color>
-    <color name="md_theme_onSurface">#E2E2E9</color>
-    <color name="md_theme_surfaceVariant">#44474F</color>
-    <color name="md_theme_onSurfaceVariant">#C4C6D0</color>
-    <color name="md_theme_inverseSurface">#E2E2E9</color>
-    <color name="md_theme_inverseOnSurface">#2F3036</color>
+    <!-- Surface -->
+    <color name="md_theme_surface">#1A1A1A</color>
+    <color name="md_theme_onSurface">#E0E0E0</color>
+    <color name="md_theme_surfaceVariant">#424242</color>
+    <color name="md_theme_onSurfaceVariant">#BDBDBD</color>
+    <color name="md_theme_inverseSurface">#E0E0E0</color>
+    <color name="md_theme_inverseOnSurface">#1A1A1A</color>
 
-    <!-- Surface containers — glass dark elevation tones -->
-    <color name="md_theme_surfaceContainerLowest">#0C0D12</color>
-    <color name="md_theme_surfaceContainerLow">#181A20</color>
-    <color name="md_theme_surfaceContainer">#1C1E25</color>
-    <color name="md_theme_surfaceContainerHigh">#26282F</color>
-    <color name="md_theme_surfaceContainerHighest">#31333A</color>
+    <!-- Surface containers -->
+    <color name="md_theme_surfaceContainerLowest">#0A0A0A</color>
+    <color name="md_theme_surfaceContainerLow">#1A1A1A</color>
+    <color name="md_theme_surfaceContainer">#242424</color>
+    <color name="md_theme_surfaceContainerHigh">#2C2C2C</color>
+    <color name="md_theme_surfaceContainerHighest">#363636</color>
 
-    <!-- Outline colors -->
-    <color name="md_theme_outline">#8E9099</color>
-    <color name="md_theme_outlineVariant">#44474F</color>
+    <!-- Outline -->
+    <color name="md_theme_outline">#757575</color>
+    <color name="md_theme_outlineVariant">#424242</color>
 
-    <!-- Other colors -->
-    <color name="md_theme_inversePrimary">#5B7FFF</color>
+    <!-- Other -->
+    <color name="md_theme_inversePrimary">#424242</color>
     <color name="md_theme_shadow">#000000</color>
-    <color name="md_theme_surfaceTint">#B3C5FF</color>
+    <color name="md_theme_surfaceTint">#E0E0E0</color>
     <color name="md_theme_scrim">#000000</color>
 </resources>
